@@ -1,20 +1,27 @@
 import dotenv from 'dotenv';
+
 dotenv.config();
 import './core/db';
+
 import express from 'express';
+import multer from 'multer';
+
 import {passport} from "./core/passport";
-import {UserCtrl} from "./controllers/UserController";
 import {registerValidations} from "./validations/register";
-import {TweetsCtrl} from "./controllers/TweetsController";
 import {createTweetsValidation} from "./validations/createTweet";
+
+import {UserCtrl} from "./controllers/UserController";
+import {TweetsCtrl} from "./controllers/TweetsController";
+import {UploadFileCtrl} from "./controllers/UploadFileController";
 
 
 const app = express();
+const storage = multer.memoryStorage()
+const upload = multer({storage})
+
+
 app.use(express.json());
 app.use(passport.initialize())
-
-
-
 
 app.get('/users', UserCtrl.index);
 app.get('/users/me', passport.authenticate('jwt',{session: false}), UserCtrl.getUserInfo);
@@ -30,7 +37,7 @@ app.get('/auth/verify', registerValidations, UserCtrl.verify);
 app.post('/auth/register', registerValidations, UserCtrl.create);
 app.post('/auth/login', passport.authenticate('local'), UserCtrl.afterLogin)
 
-
+app.post('/upload', upload.single('avatar'), UploadFileCtrl.upload)
 
 
 app.listen(process.env.PORT, () => {
