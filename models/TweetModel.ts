@@ -1,13 +1,11 @@
-import {model, Schema, Document} from "mongoose";
-import {IUserModel} from "./UserModel";
+import { model, Schema, Document } from "mongoose";
+import { IUserModel } from "./UserModel";
 
 export interface ITweetModel {
     _id?: string
     text: string
     user: IUserModel
-    // likes: string
-    // retweets: string
-    // replies: string
+    images?: string[]
 }
 
 export type ITweetModelDocument = ITweetModel & Document
@@ -22,7 +20,12 @@ const TweetSchema = new Schema<ITweetModelDocument>({
         required: true,
         ref: 'User',
         type: Schema.Types.ObjectId
-    }
+    },
+    images: [
+        {
+            type: String
+        }
+    ]
 }, {
     timestamps: true
 })

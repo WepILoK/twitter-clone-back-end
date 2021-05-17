@@ -1,8 +1,6 @@
 import cloudinary from 'cloudinary'
 
-if (!process.env.CLOUDINATY_NAM) {
-    throw new Error('Отсутствуют конфигурации для cloudinary')
-}
+
 //@ts-ignore
 cloudinary.config({
     cloud_name: process.env.CLOUDINATY_NAME,

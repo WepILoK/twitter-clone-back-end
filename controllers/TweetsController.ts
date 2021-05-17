@@ -3,6 +3,7 @@ import {TweetModel} from "../models/TweetModel";
 import {isValidObjectId} from "../utils/isValidObjectId";
 import {validationResult} from "express-validator";
 import {IUserModel} from "../models/UserModel";
+import {ITweetModel} from "../models/TweetModel";
 
 
 class TweetsController {
@@ -61,8 +62,9 @@ class TweetsController {
                     return
                 }
 
-                const data: any = {
+                const data: Omit<ITweetModel, 'user'> & {user: string} = {
                     text: req.body.text,
+                    images: req.body.images,
                     user: user._id
                 }
                 const tweet = await TweetModel.create(data)
@@ -96,7 +98,6 @@ class TweetsController {
                 const tweet = await TweetModel.findById(tweetId)
 
                 if (tweet) {
-                    // user._id.equals(tweet.user._id) вот так можно сравнить два ObjectId
                     if (String(tweet.user._id) === String(user._id)) {
                         tweet.remove()
                         res.send()
@@ -130,7 +131,6 @@ class TweetsController {
 
                 const tweet = await TweetModel.findById(tweetId)
                 if (tweet) {
-                    // user._id.equals(tweet.user._id) вот так можно сравнить два ObjectId
                     if (String(tweet.user._id) === String(user._id)) {
                         tweet.text = req.body.text
                         tweet.save()
